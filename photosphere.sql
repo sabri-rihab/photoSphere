@@ -1,112 +1,88 @@
-create datababase if not exist photosphere;
-use photosphere;
-create table users (
-    _id int AUTO_INCREMENT primary key,
-    username varchar(50) unique ,
-    email varchar(50) unique ,
-    password varchar(200),
-    bio varchar(1000),
-    adresse varchar(50),
-    role enum('Admin','Moderator','BasicUser','ProUser'),
-    uploadCount int default null,
-    created_at date default (current_date),
-    last_login date default null,
-    isSuperAdmin boolean dafault null, 
-    heirarchical_level enum('junior', 'senior', 'load') default null,
-    deta_debut_abonnement date default null,
-    deta_fin_abonnement date default null
-) 
+CREATE DATABASE IF NOT EXISTS photosphere;
+USE photosphere;
 
-create table image (
-    name varchar(200) primary key,
-    url varchar(200) not null,
-    size int not null,
-    type enum('png', 'jpg', 'gif') not null,
-    dimention varchar(20) not null
-)
+CREATE TABLE users (
+    _id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) UNIQUE,
+    email VARCHAR(50) UNIQUE,
+    password VARCHAR(200),
+    bio VARCHAR(1000),
+    adresse VARCHAR(50),
+    role ENUM('Admin','Moderator','BasicUser','ProUser'),
+    uploadCount INT DEFAULT NULL,
+    created_at DATE DEFAULT (CURRENT_DATE),
+    last_login DATE DEFAULT NULL,
+    isSuperAdmin BOOLEAN DEFAULT NULL,
+    heirarchical_level ENUM('junior', 'senior', 'lead') DEFAULT NULL,
+    date_debut_abonnement DATE DEFAULT NULL,
+    date_fin_abonnement DATE DEFAULT NULL
+);
 
-create table tag (
-    _id int AUTO_INCREMENT primary key,
-    name varchar(50),
-    postCount int 
-)
+CREATE TABLE image (
+    name VARCHAR(200) PRIMARY KEY,
+    url VARCHAR(200) NOT NULL,
+    size INT NOT NULL,
+    type ENUM('png', 'jpg', 'gif') NOT NULL,
+    dimension VARCHAR(20) NOT NULL
+);
 
-create table album (
-    _id int AUTO_INCREMENT primary key,
-    name varchar(100) not null,
-    desription varchar(100),
-    status enum('public', 'private'),
-    photo varchar(100),
-    created_at date default (current_date),
-    last_updated date default (current_date)
-)
+CREATE TABLE tag (
+    _id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50),
+    postCount INT
+);
 
-create table post (
-    _id int AUTO_INCREMENT primary key,
-    title varchar(200),
-    description varchar(2000),
-    status enum('draft', 'published', 'ulpoad', 'archive'),
-    views int ,
-    imgName varchar(200),
-    foreign key imgName references image(name)
-)
+CREATE TABLE album (
+    _id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description VARCHAR(100),
+    status ENUM('public', 'private'),
+    photo VARCHAR(100),
+    created_at DATE DEFAULT (CURRENT_DATE),
+    last_updated DATE DEFAULT (CURRENT_DATE)
+);
 
-create table post_tag (
-    tag_id int,
-    post_id int,
-    foreign key tag_id references tag(_id),
-    foreign key post_id references post(_id),
-    primary key(tag_id,post_id)
-)
+CREATE TABLE post (
+    _id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(200),
+    description VARCHAR(2000),
+    status ENUM('draft', 'published', 'upload', 'archive'),
+    views INT,
+    imgName VARCHAR(200),
+    FOREIGN KEY (imgName) REFERENCES image(name)
+);
 
-create table album_post (
-    album_id int,
-    post_id int,
-    foreign key album_id references album(_id),
-    foreign key post_id references post(_id),
-    primary key(album_id,post_id)
-)
+CREATE TABLE post_tag (
+    tag_id INT,
+    post_id INT,
+    FOREIGN KEY (tag_id) REFERENCES tag(_id),
+    FOREIGN KEY (post_id) REFERENCES post(_id),
+    PRIMARY KEY (tag_id, post_id)
+);
 
-create table comment(
-    _id int AUTO_INCREMENT primary key,
-    content varchar(200) not null,
-    status anum('archive', 'public'),
-    create_at date dafault (current_date) ,
-    user_id int,
-    post_id int,
-    foreign key post_id references post(_id),
-    foreign key user_id references user(_id)
-)
+CREATE TABLE album_post (
+    album_id INT,
+    post_id INT,
+    FOREIGN KEY (album_id) REFERENCES album(_id),
+    FOREIGN KEY (post_id) REFERENCES post(_id),
+    PRIMARY KEY (album_id, post_id)
+);
 
-create table like (
-    _id int AUTO_INCREMENT primary key,
-    user_id int,
-    post_id int,
-    foreign key post_id references post(_id),
-    foreign key user_id references user(_id)
-)
+CREATE TABLE comments (
+    _id INT AUTO_INCREMENT PRIMARY KEY,
+    content VARCHAR(200) NOT NULL,
+    status ENUM('archive', 'public'),
+    created_at DATE DEFAULT (CURRENT_DATE),
+    user_id INT,
+    post_id INT,
+    FOREIGN KEY (post_id) REFERENCES post(_id),
+    FOREIGN KEY (user_id) REFERENCES users(_id)
+);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+CREATE TABLE likes (
+    _id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    post_id INT,
+    FOREIGN KEY (post_id) REFERENCES post(_id),
+    FOREIGN KEY (user_id) REFERENCES users(_id)
+);
