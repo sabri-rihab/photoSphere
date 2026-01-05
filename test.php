@@ -1,7 +1,10 @@
 <?php
 
 require_once 'Repositories\RepositoryUser.php';
-require_once 'Entities\user.php';
+require_once 'Entities\BasicUser.php';
+require_once 'Entities\ProUser.php';
+require_once 'Entities\Moderator.php';
+require_once 'Entities\Admin.php';
 
 // $pdo = Database::getConnection();
 // echo "Connecté à la base de données !<br>";
@@ -10,10 +13,16 @@ require_once 'Entities\user.php';
 // $result = $pdo->query("SELECT 'Hello' as test");
 // $data = $result->fetch();
 // echo $data['test'];
-
-// $user = new User('rihab','rihab@gmail.com', 'rihab20025', 'BasicUser', 'Agadir');
-// $repo = new UserRepository();
-// $repo->add($user);
+//  `uploadCount`, `isSuperAdmin`, `heirarchical_level`, `date_debut_abonnement`, `date_fin_abonnement`
+$BasicUser = new BasicUser('rihab','rihab@gmail.com', 'rihab20025', 'Agadir', 'i am a basic user', 5);
+$ProUser = new ProUser('tariq','tariq@gmail.com', 'rihab20025', 'Agadir', '12-05-2024', '12-05-2027', 'i am a pro user');
+$Mederator = new Moderator('hajar','hajar@gmail.com', 'rihab20025', 'Agadir', 'senior', 'i am a moderator');
+$Admin = new Admin('aicha','aicha@gmail.com', 'rihab20025', 'Agadir', false, 'i am an admin');
+$repo = new UserRepository();
+$repo->add($BasicUser);
+$repo->add($ProUser);
+$repo->add($Mederator);
+$repo->add($Admin);
 
 
 
@@ -36,8 +45,11 @@ require_once 'Entities\user.php';
         image url : <input type="file" name='image' accept="image/jpg,image/png,image/gif">
         title : <input type="text" name="title">
         description : <input type="text" name="description">
-        submit button : <button type='sybmit'>upload</button>
+        Comment : <input type="text" name="comment">
+        Tag : <input type="text" name="tag">
+        submit button : <button type='submit'>upload</button>
     </form>
+    
 </body>
 </html>
 

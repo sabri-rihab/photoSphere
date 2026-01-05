@@ -1,17 +1,17 @@
 <?php
 abstract class User 
 {
-    private $_id;
-    private $username;
-    private $email;
-    private $password;
-    private $role;
-    private $bio;
-    private $adresse;
-    private $created_at;
-    private $last_login;
+    protected $_id;
+    protected $username;
+    protected $email;
+    protected $password;
+    protected $role;
+    protected $bio;
+    protected $adresse;
+    protected $created_at;
+    protected $last_login;
 
-    public function __construct($username,$email, $password, $role, $adresse, $bio = '')
+    public function __construct($username,$email, $password, $role, $adresse, $bio)
     {
         $this->username = $username;
         $this->email = $email;
