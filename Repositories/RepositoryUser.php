@@ -1,5 +1,6 @@
 <?php
-require_once 'Repositories\database.php';
+require_once 'database.php';
+// require_once '/database.php';
 require_once 'Entities\BasicUser.php';
 require_once 'Entities\ProUser.php';
 require_once 'Entities\Moderator.php';
@@ -17,73 +18,6 @@ class UserRepository
     // --------------------------   ADD User   --------------------------
         public function add(User $user)
         {
-        // if($user instanceof BasicUser){
-        //     $stmt = $this->db->prepare("
-        //     INSERT INTO `users`(`username`, `email`, `password`, `bio`, `adresse`, `role`, `uploadCount`) 
-        //     VALUES (:username, :email, :passowrd, :bio, :adresse, :role, :uploadCount)
-        //     ");
-        // $stmt->execute([
-        //     'username' => $user->getUsername(),
-        //     'email' => $user->getEmail(),
-        //     'password' => $user->getPassword(),
-        //     'bio' => $user->getBio(),
-        //     'adresse' => $user->getAdresse(),
-        //     'role' => $user->getRole(),
-        //     'uploadCount' => $user->getUploadCount(),
-        // ]);
-
-        // }
-        // if($user instanceof ProUser){
-        //     $stmt = $this->db->prepare("
-        //     INSERT INTO `users`(`_id`, `username`, `email`, `password`, `bio`, `adresse`, `role`, `date_debut_abonnement`, `date_fin_abonnement`) 
-        //     VALUES (:username, :email, :passowrd, :bio, :adresse, :role, :date_debut_abonnement, :date_fin_abonnement)
-        //     ");
-        // $stmt->execute([
-        //     'username' => $user->getUsername(),
-        //     'email' => $user->getEmail(),
-        //     'password' => $user->getPassword(),
-        //     'bio' => $user->getBio(),
-        //     'adresse' => $user->getAdresse(),
-        //     'role' => $user->getRole(),
-        //     'date_debut_abonnement' => $user->getStartSubscription(),
-        //     'date_fin_abonnement' => $user->getEndSubscription(),
-        // ]);
-
-        // }
-        // if($user instanceof Moderator){
-        //     $stmt = $this->db->prepare("
-        //     INSERT INTO `users`(`_id`, `username`, `email`, `password`, `bio`, `adresse`, `role`, `heirarchical_level`) 
-        //     VALUES (:username, :email, :passowrd, :bio, :adresse, :role, :heirarchical_level)
-        //     ");
-        // $stmt->execute([
-        //     'username' => $user->getUsername(),
-        //     'email' => $user->getEmail(),
-        //     'password' => $user->getPassword(),
-        //     'bio' => $user->getBio(),
-        //     'adresse' => $user->getAdresse(),
-        //     'role' => $user->getRole(),
-        //     'heirarchical_level' => $user->getLevel(),
-        // ]);
-
-        // }
-        // if($user instanceof Admin){
-        //     $stmt = $this->db->prepare("
-        //     INSERT INTO `users`(`_id`, `username`, `email`, `password`, `bio`, `adresse`, `role`, `isSuperAdmin`) 
-        //     VALUES (:username, :email, :passowrd, :bio, :adresse, :role, :isSuperAdmin)
-        //     ");
-
-        //     $stmt->execute([
-        //         'username' => $user->getUsername(),
-        //         'email' => $user->getEmail(),
-        //         'password' => $user->getPassword(),
-        //         'bio' => $user->getBio(),
-        //         'adresse' => $user->getAdresse(),
-        //         'role' => $user->getRole(),
-        //         'isSuperAdmin' => $user->getIsSuperAdmin()
-        //     ]);
-            
-        // }
-        
         $stmt = $this->db->prepare("
         INSERT INTO `users`(`username`, `email`, `password`, `bio`, `adresse`, `role`, `uploadCount`, `isSuperAdmin`, `heirarchical_level`, `date_debut_abonnement`, `date_fin_abonnement`) 
         VALUES (:username, :email, :password, :bio, :adresse, :role, :uploadCount, :isSuperAdmin, :heirarchical_level, :date_debut_abonnement, :date_fin_abonnement)
@@ -107,29 +41,71 @@ class UserRepository
         return true; 
     }
 
-    // --------------------------   ADD User   --------------------------
+    // --------------------------   Login   --------------------------
     public function Login($email, $password)
     {
         $stmt = $this->db->prepare("
         SELECT *
         FROM users
         WHERE email  = :email
-        and password = :password
         ");
         
         $stmt->execute([
             'email' => $email,
-            'password' => $password,
         ]);
 
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($user) {
-            return $user; 
+        if (!$user || !password_verify($password, $user['password'])) {
+            return "user not found or incorrect password";
         }
 
-        return false;
-            
+
+        switch ($user['role']) {
+            case 'Admin':
+                return new Admin(
+                    $user['username'],
+                    $user['email'],
+                    $user['password'],
+                    $user['adresse'],
+                    $user['bio'],
+                    $user['isSuperAdmin']
+                );
+
+            case 'Moderator':
+                return new Moderator(
+                    $user['username'],
+                    $user['email'],
+                    $user['password'],
+                    $user['adresse'],
+                    $user['bio'],
+                    $user['heirarchical_level']
+                );
+
+            case 'ProUser':
+                return new ProUser(
+                    $user['username'],
+                    $user['email'],
+                    $user['password'],
+                    $user['adresse'],
+                    $user['bio'],
+                    $user['date_debut_abonnement'],
+                    $user['date_fin_abonnement']
+                );
+
+            case 'BasicUser':
+                return new BasicUser(
+                    $user['username'],
+                    $user['email'],
+                    $user['password'],
+                    $user['adresse'],
+                    $user['bio'],
+                    $user['uploadCount']
+                );
+            default:
+                return "user exist but i don't know what's the problem";
+        }
+                    
     }
 
 

@@ -1,5 +1,6 @@
 <?php
 require_once 'Repositories\RepositoryPost.php';
+require_once 'Repositories\RepositoryUser.php';
 require_once 'Entities\image.php';
 require_once 'Entities\Post.php';
 require_once 'Entities\Comment.php';
@@ -11,7 +12,7 @@ require_once 'Entities\Tag.php';
 // $title = $_POST['title'];
 // $description = $_POST['description'];
 // $comment = $_POST['comment'];
-$tagName = $_POST['tag'];
+// $tagName = $_POST['tag'];
 
 // if(!isset($theImage) || $theImage['error'] !== 0){
 //     die("no image uploaded!");
@@ -54,10 +55,18 @@ $tagName = $_POST['tag'];
 // $repo->addPost($post);
 // $repo->addLike($tag);
 // $repo->addtag($tag);
-// $repo = new PostRepository;
+$repo = new UserRepository;
 // $repo->incrementTagCount(3);
 
 // $repo->addImage($image);
+$email = $_POST['email'];
+$password = $_POST['password'];
+
+$role = $repo->login($email,$password);
+echo "you are a ".$role->getRole() ;
+
+
+
 
 
 // }

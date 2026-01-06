@@ -5,14 +5,16 @@ class Moderator extends User
 {
     private $heirarchical_level;
 
-    public function __construct($username,$email, $password, $adresse, $heirarchical_level ,$bio , $role = 'Moderator')
+    public function __construct($username,$email, $password, $adresse, $bio = '' , $heirarchical_level)
     {
-        parent::__construct($username,$email, $password, $adresse, $bio , $role);
+        parent::__construct($username,$email, $password, $adresse, $bio);
         $this->heirarchical_level = $heirarchical_level;
 
     }
 
-
+    
+    
+    public function getRole(){ return 'Moderator';}
     public function getLevel(){ return $this->heirarchical_level; }
     public function getUploadCount(){ return NULL; }
     public function getIsSuperAdmin(){ return Null;}
