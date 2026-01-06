@@ -1,10 +1,12 @@
 <?php
 
 require_once 'Repositories\RepositoryUser.php';
+require_once 'Repositories\RepositoryComment.php';
 require_once 'Entities\BasicUser.php';
 require_once 'Entities\ProUser.php';
 require_once 'Entities\Moderator.php';
 require_once 'Entities\Admin.php';
+require_once 'Entities\Comment.php';
 
 // $pdo = Database::getConnection();
 // echo "Connecté à la base de données !<br>";
@@ -20,6 +22,15 @@ require_once 'Entities\Admin.php';
 // $Mederator = new Moderator('hajar','hajar@gmail.com', 'rihab20025', 'Agadir','i am a moderator','senior', 'i am a moderator');
 // $Admin = new Admin('aicha','aicha@gmail.com', 'rihab20025', 'Agadir', true, 'i am an admin');
 // $repo = new UserRepository();
+$repo = new RepositoryComment();
+$comment = new Comment("amazing!!!", 3, 43);
+$comments = $repo->getComments();
+foreach($comments as $com){
+    print_r($com);
+    echo '<br>';
+}
+// var_dump($users)
+
 // $repo->add($BasicUser   );
 // $repo->add($ProUser);
 // $repo->add($Mederator);

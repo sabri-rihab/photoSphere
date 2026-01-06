@@ -51,6 +51,8 @@ CREATE TABLE post (
     imgName VARCHAR(200),
     FOREIGN KEY (imgName) REFERENCES image(name)
 );
+ALTER TABLE `post`
+ADD COLUMN `user_id` INT NOT NULL;
 
 CREATE TABLE post_tag (
     tag_id INT,
