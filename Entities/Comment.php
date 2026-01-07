@@ -18,4 +18,9 @@ class Comment {
     public function getUserID(){return $this->userID;}
     public function getStatus(){return $this->status;}
 
+    public function read(){
+        echo "content : $this->content, postID : $this->postID, userID : $this->userID, status : $this->status\n";
+        echo "<br>";
+    }
+
 }

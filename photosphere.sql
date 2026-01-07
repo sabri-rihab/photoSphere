@@ -57,8 +57,8 @@ ADD COLUMN `user_id` INT NOT NULL;
 CREATE TABLE post_tag (
     tag_id INT,
     post_id INT,
-    FOREIGN KEY (tag_id) REFERENCES tag(_id),
-    FOREIGN KEY (post_id) REFERENCES post(_id),
+    FOREIGN KEY (tag_id) REFERENCES tag(_id) ON DELETE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES post(_id) ON DELETE CASCADE,
     PRIMARY KEY (tag_id, post_id)
 );
 

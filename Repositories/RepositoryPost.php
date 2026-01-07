@@ -20,10 +20,12 @@ class PostRepository
             $image->getSize(),
             $image->getType(),
             $image->getDimension()
-        ]);   
+        ]);  
         return true; 
     }
 
+    //test : essayer d'ajouter une image d'apres la furmulaire dans le fichier test.php
+    //--------------------------      ADD POST    -----------------------
     public function addPost(Post $post){
         $stmt = $this->db->prepare("
         INSERT INTO `post`(`title`, `description`, `status`, `views`, `imgName`) 
@@ -40,71 +42,25 @@ class PostRepository
         return true; 
     }
 
-        public function addComment(Comment $comment){
-        $stmt = $this->db->prepare("
-        INSERT INTO `comments`(`content`, `status`, `user_id`, `post_id`) 
-        VALUES (?, ?, ?, ?)
-        ");
-        
-        $stmt->execute([
-            $comment->getContent(),
-            $comment->getStatus(),
-            $comment->getUserID(),
-            $comment->getPostID(),
-        ]);   
-        return true; 
-    }
 
-        public function addLike(Like $like){
+    //test : essayer d'ajouter une image d'apres la furmulaire dans le fichier test.php
+
+
+    //-------------------------  ADD LIKE   --------------------------------
+    public function addLike(Like $like){
         $stmt = $this->db->prepare("
         INSERT INTO `likes`(`user_id`, `post_id`) 
         VALUES (?, ?)
         ");
         
         $stmt->execute([
-            $like->getPostID(),
-            $like->getUserID()
+            $like->getUserID(),
+            $like->getPostID()
         ]);   
         return true; 
     }
 
-        public function addTag(Tag $tag){
-        $stmt = $this->db->prepare("
-        INSERT INTO `tag`(`name`, `postCount`) 
-        VALUES (?,?)
-        ");
-        
-        $stmt->execute([
-            $tag->getName(),
-            $tag->getpostCount()
-        ]);   
-        return true; 
-    }
-
-    public function AddTagToPost($tag_id, $post_id){
-        $stmt = $this->db->prepare("
-        INSERT INTO `post_tag`(`tag_id`, `post_id`)
-        VALUES (:tag_id, :post_id)
-        ");
-        
-        $stmt->execute([
-            'tag_id' => $tag_id,
-            'post_id' => $post_id
-        ]);   
-        return true; 
-    }
-    public function incrementTagCount($tag_id){
-        $stmt = $this->db->prepare("
-        UPDATE tag
-        SET tag.postCount = tag.postCount + 1
-        WHERE tag._id = :tag_id
-        ");
-        
-        $stmt->execute([
-            'tag_id' => $tag_id
-        ]);   
-        return true; 
-      
-    }
+    //test : N’oubliez pas de commenter les inputs et les lignes inutiles avant d’exécuter le code.
+    
 
 }

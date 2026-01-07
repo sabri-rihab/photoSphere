@@ -2,11 +2,14 @@
 
 require_once 'Repositories\RepositoryUser.php';
 require_once 'Repositories\RepositoryComment.php';
+require_once 'Repositories\RepositoryTag.php';
+require_once 'Repositories\PhotoRepository.php';
 require_once 'Entities\BasicUser.php';
 require_once 'Entities\ProUser.php';
 require_once 'Entities\Moderator.php';
 require_once 'Entities\Admin.php';
 require_once 'Entities\Comment.php';
+require_once 'Entities\Tag.php';
 
 // $pdo = Database::getConnection();
 // echo "Connecté à la base de données !<br>";
@@ -22,13 +25,13 @@ require_once 'Entities\Comment.php';
 // $Mederator = new Moderator('hajar','hajar@gmail.com', 'rihab20025', 'Agadir','i am a moderator','senior', 'i am a moderator');
 // $Admin = new Admin('aicha','aicha@gmail.com', 'rihab20025', 'Agadir', true, 'i am an admin');
 // $repo = new UserRepository();
-$repo = new RepositoryComment();
-$comment = new Comment("amazing!!!", 3, 43);
-$comments = $repo->getComments();
-foreach($comments as $com){
-    print_r($com);
-    echo '<br>';
-}
+// $repo = new RepositoryComment();
+// $comment = new Comment("amazing!!!", 3, 43);
+// $comments = $repo->getComments();
+// foreach($comments as $com){
+//     print_r($com);
+//     echo '<br>';
+// }
 // var_dump($users)
 
 // $repo->add($BasicUser   );
@@ -44,6 +47,24 @@ foreach($comments as $com){
 // print_r($result);
 // echo "$result";
 
+
+// $repo = new PhotoRepository();
+// // print_r($repo->ChackIfTagExist('winter'));
+// $result = $repo->ChackIfTagExist('hello');
+// if(empty($result)){echo "no tag found!";}
+
+
+$repo = new UserRepository();
+print_r($repo->suspendUser('rihab'));
+// print_r($repo->Login('hajar@gmail.com', 'rihab20025'));
+// $repo = new RepositoryTag();
+// print_r($repo->checkIfTagExist('winter'));
+
+
+
+
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -54,13 +75,13 @@ foreach($comments as $com){
 </head>
 <body>
     <form action="createPost.php" method="POST" enctype="multipart/form-data">
-        <!-- image url : <input type="file" name='image' accept="image/jpg,image/png,image/gif">
+        image url : <input type="file" name='image' accept="image/jpg,image/png,image/gif">
         title : <input type="text" name="title">
-        description : <input type="text" name="description">
+        description : <input type="text" name="description"> 
         Comment : <input type="text" name="comment">
-        Tag : <input type="text" name="tag"> -->
+        Tag : <input type="text" name="tag">
         email : <input type="text" name="email">
-        password : <input type="password" name="password"> 
+        password : <input type="password" name="password">
         submit button : <button type='submit'>upload</button>
     </form>
     

@@ -7,6 +7,7 @@ interface UserInterface
     public Function findByID($_id);
     public Function findByRole($role);
     public Function findByName($name);
-    public Function suspendUser();
-    public Function softDeletUser();
+    public Function suspendUser($name):bool;
+    public Function activeUser($name):bool;
+    public Function softDeletUser($name):bool;
 }

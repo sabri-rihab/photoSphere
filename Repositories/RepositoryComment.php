@@ -27,21 +27,77 @@ class RepositoryComment implements CommentInterface
         ]);   
         return true; 
     }
+
+    //------------------------    REMOVE COMMENT    -------------------------
     public function removeComment(int $_id){
         $stmt = $this->db->prepare("
-            DELETE FROM `comments` 
-            WHERE _id = :_id
+        DELETE FROM `comments` 
+        WHERE _id = :_id
         ");
         $stmt->execute([':_id'=>$_id]);
         return $stmt->rowCount() === 1;
     }
-
-
+    
+    
+    //------------------------    get  COMMENTs count    -------------------------
     public function getComments(): array{
         $stmt = $this->db->prepare("SELECT * FROM `comments`");
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $comments_arr = [];
+        foreach($comments as $com){
+            $comments_arr[] = new Comment(
+                $com['content'], 
+                $com['post_id'], 
+                $com['user_id'], 
+                $com['status']
+            ); 
+        }
+
+        return $comments_arr;
     }
 
-    public function getCommentCount(): int{}
+    // test : 
+    // $repo = new RepositoryComment();
+    // $comments = $repo->getComments();
+    // foreach($comments as $comment){
+    //     $comment->read();
+    // }
+
+
+
+    //------------------- get comments by post _id => show user name, content and created_at    -----------------------------
+        public function getCommentsByPostID($_id): array{
+        $stmt = $this->db->prepare("
+            SELECT u.username , c.content, c.created_at FROM `comments` c
+            JOIN users u on  c.user_id = u._id
+            WHERE c.post_id = :_id"
+        );
+        $stmt->execute([':_id'=>$_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    //test:
+    // $repo = new RepositoryComment();
+    // $comments = $repo->getCommentsByPostID(5);
+    // foreach($comments as $comment){
+    //     echo "user : " . $comment['username'] . "\tcontent : " . $comment['content'] . "\twrote at : " . $comment['created_at'] ."\n";
+    //     echo "<br>";
+    // }
+
+
+    
+    //----------------------    get comments count  --------------------
+    public function getCommentCount(): int{
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM `comments`");
+        $stmt->execute();
+        $result = $stmt->fetch();
+        return (int) $result[0];
+    }
+
+
+    //test : 
+    // $repo = new RepositoryComment();
+    // $count = $repo->getCommentCount();
+    // echo 'total comments count is : '. $count ;
+
 }

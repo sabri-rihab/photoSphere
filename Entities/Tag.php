@@ -1,7 +1,6 @@
 <?php
 class Tag 
 {
-    private $_id;
     private $name;
     private $postCount;
     
@@ -12,4 +11,8 @@ class Tag
 
     public function getName(){ return $this->name ;}
     public function getpostCount(){ return $this->postCount ;}
+
+    public function read(){
+        echo "name : $this->name | postCpount : $this->postCount";
+    }
 }

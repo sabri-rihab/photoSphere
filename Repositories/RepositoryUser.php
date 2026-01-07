@@ -85,6 +85,11 @@ class UserRepository implements UserInterface
                     
     }
 
+    //test : 
+    // $repo = new UserRepository();
+    // print_r($repo->Login('hajar@gmail.com', 'rihab20025'));
+
+
     // --------------------------   ADD User   --------------------------
         public function add(User $user)
         {
@@ -110,6 +115,16 @@ class UserRepository implements UserInterface
         
         return true; 
     }    
+
+
+    //test : 
+    // $repo = new UserRepository();
+    // $new_user = new Admin('nacer', 'nacer@gmail.com', 'nacer2025', 'Agadir', false, 'hello! i am Nacer, the new Admin');
+    // $repo->add($new_user);
+
+
+
+
     //-------------------------     Find All Users      ----------------------------------
     public Function findAll():array
     {
@@ -117,6 +132,14 @@ class UserRepository implements UserInterface
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    //test : 
+    // $repo = new UserRepository();
+    // print_r($repo->findAll());
+
+
+
+
 
     //-------------------------     Find User BY ID      ----------------------------------
     public Function findByID($_id)
@@ -172,19 +195,25 @@ class UserRepository implements UserInterface
 
     }
 
+    //test : 
+    // $repo = new UserRepository();
+    // $repo->findByID(58);
+
+
     //-------------------------     Find User BY Role      ----------------------------------
 
     public Function findByRole($role)
     {
-        $stmt = $this->db->prepare("SELECT * FROM `users` u WHERE u.role = 'BasicUser'");
-        // $stmt->execute(['role' => $role]);
-        $stmt->execute();
+        $stmt = $this->db->prepare("SELECT * FROM `users` u WHERE u.role = :role");
+        $stmt->execute([':role' => $role]);
+        // $stmt->execute();
         $users = $stmt->fetchAll();
+        $users_array = [];
         // return $users;
         foreach($users as $user){
         switch ($user['role']) {
             case 'Admin':
-                $users_array =  new Admin(
+                $users_array[] =  new Admin(
                     $user['username'],
                     $user['email'],
                     $user['password'],
@@ -194,7 +223,7 @@ class UserRepository implements UserInterface
                 );
                 break;
             case 'Moderator':
-                $users_array =  new Moderator(
+                $users_array[] =  new Moderator(
                     $user['username'],
                     $user['email'],
                     $user['password'],
@@ -204,7 +233,7 @@ class UserRepository implements UserInterface
                 );
                 break;
             case 'ProUser':
-                $users_array =  new ProUser(
+                $users_array[] =  new ProUser(
                     $user['username'],
                     $user['email'],
                     $user['password'],
@@ -215,7 +244,7 @@ class UserRepository implements UserInterface
                 );
                 break;
             case 'BasicUser':
-                $users_array =  new BasicUser(
+                $users_array[] =  new BasicUser(
                     $user['username'],
                     $user['email'],
                     $user['password'],
@@ -223,6 +252,7 @@ class UserRepository implements UserInterface
                     $user['bio'],
                     $user['uploadCount']
                 );
+                break;
             default:
                 return "No user was found!!!!!!!!!!!!" ;
                 break;
@@ -231,18 +261,64 @@ class UserRepository implements UserInterface
         return $users_array;
     }
 
+    //test : 
+    // $repo = new UserRepository();
+    // $BasicUsers = $repo->findByRole('ProUser');
+    // foreach($BasicUsers as $user){
+    //     echo "_id : " . $user->getUserID() . " name : " . $user->getUsername();
+    //     echo "<br>";
+    // }
+
+
+    //----------------------------      FIND USER BY NAME     ---------------------------
     public Function findByName($name)
     {
         return true;
     }
 
-    public Function suspendUser()
+    //----------------------------      suspend USER     ---------------------------
+    public Function suspendUser($name):bool
     {
-        return true;
+        $stmt = $this->db->prepare("UPDATE users SET status = 'suspend' WHERE username = :name and status != 'archive';;
+            ");
+        $stmt->execute([':name'=>$name]);
+        return $stmt->rowCount() >= 1;
     }
-    public Function softDeletUser()
+
+    //test : 
+    // $repo = new UserRepository();
+    // print_r($repo->suspendUser('rihab'));
+
+    //----------------------------      suspend USER     ---------------------------
+    public Function activeUser($name):bool
     {
-        return true;
+        $stmt = $this->db->prepare("UPDATE users
+            SET status = 'active'
+            WHERE username = :name 
+            and status != 'archive';
+            ");
+        $stmt->execute([':name'=>$name]);
+        return $stmt->rowCount() >= 1;
     }
+
+    //test : 
+    // $repo = new UserRepository();
+    // print_r($repo->activeUser('rihab'));
+
+    //----------------------------      SOFT DELETE USER    ---------------------------
+    public Function softDeletUser($name):bool
+    {
+        $stmt = $this->db->prepare("UPDATE users
+            SET status = 'archive'
+            WHERE username = :name
+            and status != 'archive';
+            ");
+        $stmt->execute([':name'=>$name]);
+        return $stmt->rowCount() >= 1;
+    }
+
+    //test : 
+    // $repo = new UserRepository();
+    // print_r($repo->softDeletUser('rihab'));
 
 }
